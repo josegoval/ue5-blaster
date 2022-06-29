@@ -16,7 +16,16 @@ public:
 
 	virtual void Tick(float DeltaTime) override;
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
-	
+
+	UFUNCTION()
+	void MoveForward(float Value);
+	UFUNCTION()
+	void MoveRight(float Value);	
+	UFUNCTION()
+	void LookUpMouse(float Value);
+	UFUNCTION()
+	void TurnRightMouse(float Value);
+	virtual void Jump() override;
 protected:
 	virtual void BeginPlay() override;
 

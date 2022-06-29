@@ -41,5 +41,38 @@ void ABlasterCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCo
 {
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
 
+	// Bind axis
+    PlayerInputComponent->BindAxis(FName(TEXT("Move Forward / Backward")), this, &ThisClass::MoveForward);
+    PlayerInputComponent->BindAxis(FName(TEXT("Move Right / Left")), this, &ThisClass::MoveRight);
+    PlayerInputComponent->BindAxis(FName(TEXT("Look Up / Down Mouse")), this, &ThisClass::LookUpMouse);
+    PlayerInputComponent->BindAxis(FName(TEXT("Turn Right / Left Mouse")), this, &ThisClass::TurnRightMouse);
+	// Bind actions	
+	PlayerInputComponent->BindAction(FName(TEXT("Jump")), EInputEvent::IE_Pressed, this, &ThisClass::Jump);
+}
+
+void ABlasterCharacter::MoveForward(float Value)
+{
+	AddMovementInput(FRotationMatrix(Controller->GetControlRotation()).GetScaledAxis(EAxis::X), Value);
+}
+
+
+void ABlasterCharacter::MoveRight(float Value)
+{
+	AddMovementInput(FRotationMatrix(Controller->GetControlRotation()).GetScaledAxis(EAxis::Y), Value);
+}
+
+void ABlasterCharacter::LookUpMouse(float Value)
+{
+	AddControllerPitchInput(Value);
+}
+
+void ABlasterCharacter::TurnRightMouse(float Value)
+{
+	AddControllerYawInput(Value);
+}
+
+void ABlasterCharacter::Jump()
+{
+	Super::Jump();
 }
 
