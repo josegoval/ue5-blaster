@@ -20,7 +20,7 @@ public:
 	UFUNCTION()
 	void MoveForward(float Value);
 	UFUNCTION()
-	void MoveRight(float Value);	
+	void MoveRight(float Value);
 	UFUNCTION()
 	void LookUpMouse(float Value);
 	UFUNCTION()
@@ -32,8 +32,10 @@ protected:
 private:
 	UPROPERTY(VisibleAnywhere, Category = Camera)
 	class USpringArmComponent* SpringArmComponent;
-	
+
 	UPROPERTY(VisibleAnywhere, Category = Camera)
 	class UCameraComponent* FollowCamera;
 
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, meta=(AllowPrivateAccess = "true"))
+	class UWidgetComponent* OverheadWidget;
 };
