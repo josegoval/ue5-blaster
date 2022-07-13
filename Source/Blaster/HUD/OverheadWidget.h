@@ -18,7 +18,9 @@ public:
 	class UTextBlock* OverheadText;
 
 	UFUNCTION(BlueprintCallable)
-	void DiplayENetRoles(APawn* Pawn) const;
+	void DisplayENetRoles(APawn* Pawn) const;
+	UFUNCTION(BlueprintCallable)
+	void DisplayPlayerName(APawn* Pawn) const;
 protected:
 	virtual void OnLevelRemovedFromWorld(ULevel* InLevel, UWorld* InWorld) override;
 };

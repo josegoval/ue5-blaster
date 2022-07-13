@@ -5,9 +5,12 @@
 
 #include "Blaster/Utils/ENetRoleUtils.h"
 #include "Components/TextBlock.h"
+#include "GameFramework/PlayerState.h"
 
-void UOverheadWidget::DiplayENetRoles(APawn* Pawn) const
+void UOverheadWidget::DisplayENetRoles(APawn* Pawn) const
 {
+	if(!Pawn) return;
+
 	const ENetRole LocalRole = Pawn->GetLocalRole();
 	const ENetRole RemoteRole = Pawn->GetRemoteRole();
 
@@ -17,6 +20,14 @@ void UOverheadWidget::DiplayENetRoles(APawn* Pawn) const
 		*ENetRoleUtils::GetENetRoleString(RemoteRole)
 	);
 	OverheadText->SetText(FText::FromString(DisplayText));
+}
+
+void UOverheadWidget::DisplayPlayerName(APawn* Pawn) const
+{
+	if(!Pawn) return;
+	const APlayerState* PlayerState = Pawn->GetPlayerState();
+	if(!PlayerState)return;
+	OverheadText->SetText(FText::FromString(PlayerState->GetPlayerName()));
 }
 
 void UOverheadWidget::OnLevelRemovedFromWorld(ULevel* InLevel, UWorld* InWorld)
