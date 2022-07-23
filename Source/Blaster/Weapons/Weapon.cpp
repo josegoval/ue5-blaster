@@ -31,13 +31,14 @@ AWeapon::AWeapon()
 	// PickupWidgetComponent configuration
 	PickupWidgetComponent = CreateDefaultSubobject<UWidgetComponent>(TEXT("PickupInfoWidget"));
 	PickupWidgetComponent->SetupAttachment(RootComponent);
-	PickupWidgetComponent->SetVisibility(false);
 }
 
 // Called when the game starts or when spawned
 void AWeapon::BeginPlay()
 {
 	Super::BeginPlay();
+
+	PickupWidgetComponent->SetVisibility(false);
 
 	if (HasAuthority())
 	{
@@ -49,21 +50,24 @@ void AWeapon::BeginPlay()
 	}
 }
 
+void AWeapon::SetPickupWidgetComponentVisibility(const bool bValue) const
+{
+	PickupWidgetComponent->SetVisibility(bValue);
+}
+
 void AWeapon::HandleOnComponentBeginOverlap(
 	UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex,
 	bool bFromSweep, const FHitResult& SweepResult)
 {
-	const ABlasterCharacter* BlasterCharacter = Cast<ABlasterCharacter>(OtherActor);
+	ABlasterCharacter* BlasterCharacter = Cast<ABlasterCharacter>(OtherActor);
 	if (!BlasterCharacter) return;
-	PickupWidgetComponent->SetVisibility(true);
+	BlasterCharacter->AddOverlappingWeaponToArray(this);
 }
 
 void AWeapon::HandleOnComponentEndOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
                                           UPrimitiveComponent* OtherComp, int32 OtherBodyIndex)
 {
-	const ABlasterCharacter* BlasterCharacter = Cast<ABlasterCharacter>(OtherActor);
-	TArray<AActor*> OverlappingActors;
-	OverlappedComponent->GetOverlappingActors(OverlappingActors);
-	if (!BlasterCharacter || OverlappingActors.Num()) return;
-	PickupWidgetComponent->SetVisibility(false);
+	ABlasterCharacter* BlasterCharacter = Cast<ABlasterCharacter>(OtherActor);
+	if (!BlasterCharacter) return;
+	BlasterCharacter->RemoveOverlappingWeaponToArray(this);
 }

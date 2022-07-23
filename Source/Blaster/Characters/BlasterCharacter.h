@@ -16,6 +16,7 @@ public:
 
 	virtual void Tick(float DeltaTime) override;
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
+	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
 
 	UFUNCTION()
 	void MoveForward(float Value);
@@ -26,8 +27,15 @@ public:
 	UFUNCTION()
 	void TurnRightMouse(float Value);
 	virtual void Jump() override;
+
+	UFUNCTION()
+	void AddOverlappingWeaponToArray(class AWeapon* OverlappingWeapon);
+	UFUNCTION()
+	void RemoveOverlappingWeaponToArray(AWeapon* OverlappingWeapon);
+	
 protected:
 	virtual void BeginPlay() override;
+
 
 private:
 	UPROPERTY(VisibleAnywhere, Category = Camera)
@@ -38,4 +46,10 @@ private:
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, meta=(AllowPrivateAccess = "true"))
 	class UWidgetComponent* OverheadWidget;
+
+	UPROPERTY(ReplicatedUsing = OnRep_OverlappingWeapon)
+	TArray<AWeapon*> OverlappingWeaponsArray;
+
+	UFUNCTION()
+	void OnRep_OverlappingWeapon(TArray<AWeapon*> PrevValue);
 };

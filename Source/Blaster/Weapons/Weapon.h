@@ -24,6 +24,9 @@ class BLASTER_API AWeapon : public AActor
 public:
 	AWeapon();
 
+	UFUNCTION()
+	void SetPickupWidgetComponentVisibility(const bool bValue) const;
+
 protected:
 	virtual void BeginPlay() override;
 
@@ -39,6 +42,7 @@ private:
 
 	UPROPERTY(VisibleAnywhere, Category = "Weapon Properties")
 	class UWidgetComponent* PickupWidgetComponent;
+
 
 	UFUNCTION()
 	void HandleOnComponentBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
