@@ -40,6 +40,7 @@ private:
 	UPROPERTY(VisibleAnywhere, Category = "Weapon Properties")
 	EWeaponState WeaponState;
 
+private:
 	UPROPERTY(VisibleAnywhere, Category = "Weapon Properties")
 	class UWidgetComponent* PickupWidgetComponent;
 
@@ -52,4 +53,10 @@ private:
 	UFUNCTION()
 	void HandleOnComponentEndOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
 	                                 UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
+
+public:
+	void SetWeaponState(EWeaponState NextWeaponState)
+	{
+		this->WeaponState = NextWeaponState;
+	}
 };

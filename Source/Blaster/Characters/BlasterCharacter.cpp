@@ -3,6 +3,7 @@
 
 #include "BlasterCharacter.h"
 
+#include "Blaster/BlasterComponets/CombatComponent.h"
 #include "Blaster/Weapons/Weapon.h"
 #include "Camera/CameraComponent.h"
 #include "Components/WidgetComponent.h"
@@ -30,6 +31,9 @@ ABlasterCharacter::ABlasterCharacter()
 	// Widget setup
 	OverheadWidget = CreateDefaultSubobject<UWidgetComponent>(TEXT("OverheadWidget"));
 	OverheadWidget->SetupAttachment(RootComponent);
+	// Combat component setup
+	CombatComponent = CreateDefaultSubobject<UCombatComponent>(TEXT("CombatComponent"));
+	CombatComponent->SetIsReplicated(true);
 }
 
 // Called when the game starts or when spawned
@@ -72,6 +76,7 @@ void ABlasterCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCo
 	PlayerInputComponent->BindAxis(FName(TEXT("Turn Right / Left Mouse")), this, &ThisClass::TurnRightMouse);
 	// Bind actions	
 	PlayerInputComponent->BindAction(FName(TEXT("Jump")), EInputEvent::IE_Pressed, this, &ThisClass::Jump);
+	PlayerInputComponent->BindAction(FName(TEXT("Equip")), EInputEvent::IE_Pressed, this, &ThisClass::Equip);
 }
 
 void ABlasterCharacter::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
@@ -79,6 +84,13 @@ void ABlasterCharacter::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& Ou
 	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
 
 	DOREPLIFETIME_CONDITION(ABlasterCharacter, OverlappingWeaponsArray, COND_OwnerOnly);
+}
+
+void ABlasterCharacter::PostInitializeComponents()
+{
+	Super::PostInitializeComponents();
+	if(!CombatComponent) return;
+	CombatComponent->BlasterCharacter = this;
 }
 
 void ABlasterCharacter::MoveForward(float Value)
@@ -100,6 +112,12 @@ void ABlasterCharacter::LookUpMouse(float Value)
 void ABlasterCharacter::TurnRightMouse(float Value)
 {
 	AddControllerYawInput(Value);
+}
+
+void ABlasterCharacter::Equip()
+{
+	if(!OverlappingWeaponsArray.Num() || !HasAuthority()) return;
+	CombatComponent->EquipWeapon(OverlappingWeaponsArray[0]);
 }
 
 void ABlasterCharacter::Jump()

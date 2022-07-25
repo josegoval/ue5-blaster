@@ -17,7 +17,8 @@ public:
 	virtual void Tick(float DeltaTime) override;
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
-
+	virtual void PostInitializeComponents() override;
+	
 	UFUNCTION()
 	void MoveForward(float Value);
 	UFUNCTION()
@@ -26,12 +27,15 @@ public:
 	void LookUpMouse(float Value);
 	UFUNCTION()
 	void TurnRightMouse(float Value);
+	UFUNCTION()
+	void Equip();
 	virtual void Jump() override;
 
 	UFUNCTION()
 	void AddOverlappingWeaponToArray(class AWeapon* OverlappingWeapon);
 	UFUNCTION()
 	void RemoveOverlappingWeaponToArray(AWeapon* OverlappingWeapon);
+
 	
 protected:
 	virtual void BeginPlay() override;
@@ -50,6 +54,14 @@ private:
 	UPROPERTY(ReplicatedUsing = OnRep_OverlappingWeapon)
 	TArray<AWeapon*> OverlappingWeaponsArray;
 
+	UPROPERTY()
+	class UCombatComponent* CombatComponent;
+
 	UFUNCTION()
 	void OnRep_OverlappingWeapon(TArray<AWeapon*> PrevValue);
 };
+
+namespace BlasterCharacterSockets
+{
+	inline FName RightHandSocket = FName(TEXT("RightHandSocket"));
+}
