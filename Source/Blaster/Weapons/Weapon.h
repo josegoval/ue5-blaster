@@ -24,6 +24,8 @@ class BLASTER_API AWeapon : public AActor
 public:
 	AWeapon();
 
+	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
+
 	UFUNCTION()
 	void SetPickupWidgetComponentVisibility(const bool bValue) const;
 
@@ -37,8 +39,11 @@ private:
 	UPROPERTY(VisibleAnywhere, Category = "Weapon Properties")
 	class USphereComponent* PickupAreaSphereComponent;
 
-	UPROPERTY(VisibleAnywhere, Category = "Weapon Properties")
+	UPROPERTY(ReplicatedUsing=OnRep_WeaponState, VisibleAnywhere, Category = "Weapon Properties")
 	EWeaponState WeaponState;
+
+	UFUNCTION()
+	void OnRep_WeaponState();
 
 private:
 	UPROPERTY(VisibleAnywhere, Category = "Weapon Properties")
@@ -55,8 +60,5 @@ private:
 	                                 UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
 
 public:
-	void SetWeaponState(EWeaponState NextWeaponState)
-	{
-		this->WeaponState = NextWeaponState;
-	}
+	void UpdateWeaponState(EWeaponState NextWeaponState);
 };

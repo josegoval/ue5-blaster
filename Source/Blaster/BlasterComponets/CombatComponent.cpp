@@ -31,11 +31,11 @@ void UCombatComponent::EquipWeapon(AWeapon* WeaponToEquip)
 	if (!BlasterCharacter || !WeaponToEquip) return;
 
 	EquippedWeapon = WeaponToEquip;
-	EquippedWeapon->SetWeaponState(EWeaponState::EWS_Equipped);
-	EquippedWeapon->SetPickupWidgetComponentVisibility(false);
+	EquippedWeapon->UpdateWeaponState(EWeaponState::EWS_Equipped);
 	USkeletalMeshComponent* MeshComponent = BlasterCharacter->GetMesh();
 	const USkeletalMeshSocket* SkeletalMeshSocket = MeshComponent->GetSocketByName(
 		BlasterCharacterSockets::RightHandSocket);
 	if(!SkeletalMeshSocket) return;
 	SkeletalMeshSocket->AttachActor(EquippedWeapon, MeshComponent);
 }
+

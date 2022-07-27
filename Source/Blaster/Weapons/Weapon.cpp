@@ -6,6 +6,7 @@
 #include "Blaster/Characters/BlasterCharacter.h"
 #include "Components/SphereComponent.h"
 #include "Components/WidgetComponent.h"
+#include "Net/UnrealNetwork.h"
 
 
 // Sets default values
@@ -33,6 +34,13 @@ AWeapon::AWeapon()
 	PickupWidgetComponent->SetupAttachment(RootComponent);
 }
 
+void AWeapon::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
+{
+	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
+
+	DOREPLIFETIME(AWeapon, WeaponState);
+}
+
 // Called when the game starts or when spawned
 void AWeapon::BeginPlay()
 {
@@ -55,6 +63,14 @@ void AWeapon::SetPickupWidgetComponentVisibility(const bool bValue) const
 	PickupWidgetComponent->SetVisibility(bValue);
 }
 
+void AWeapon::OnRep_WeaponState()
+{
+	if(WeaponState == EWeaponState::EWS_Equipped)
+	{
+		SetPickupWidgetComponentVisibility(false);
+	}
+}
+
 void AWeapon::HandleOnComponentBeginOverlap(
 	UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex,
 	bool bFromSweep, const FHitResult& SweepResult)
@@ -70,4 +86,15 @@ void AWeapon::HandleOnComponentEndOverlap(UPrimitiveComponent* OverlappedCompone
 	ABlasterCharacter* BlasterCharacter = Cast<ABlasterCharacter>(OtherActor);
 	if (!BlasterCharacter) return;
 	BlasterCharacter->RemoveOverlappingWeaponToArray(this);
+}
+
+void AWeapon::UpdateWeaponState(EWeaponState NextWeaponState)
+{
+	WeaponState = NextWeaponState;
+
+	if(NextWeaponState == EWeaponState::EWS_Equipped)
+	{
+		SetPickupWidgetComponentVisibility(false);
+		PickupAreaSphereComponent->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+	}
 }

@@ -59,6 +59,9 @@ private:
 
 	UFUNCTION()
 	void OnRep_OverlappingWeapon(TArray<AWeapon*> PrevValue);
+
+	UFUNCTION(Server, Reliable)
+	void ServerEquip();
 };
 
 namespace BlasterCharacterSockets

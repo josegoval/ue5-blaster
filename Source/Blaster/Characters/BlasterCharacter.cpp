@@ -58,6 +58,12 @@ void ABlasterCharacter::OnRep_OverlappingWeapon(TArray<AWeapon*> PrevValue)
 	}
 }
 
+void ABlasterCharacter::ServerEquip_Implementation()
+{
+	if(!OverlappingWeaponsArray.Num()) return;
+	CombatComponent->EquipWeapon(OverlappingWeaponsArray[0]);
+}
+
 // Called every frame
 void ABlasterCharacter::Tick(float DeltaTime)
 {
@@ -116,8 +122,8 @@ void ABlasterCharacter::TurnRightMouse(float Value)
 
 void ABlasterCharacter::Equip()
 {
-	if(!OverlappingWeaponsArray.Num() || !HasAuthority()) return;
-	CombatComponent->EquipWeapon(OverlappingWeaponsArray[0]);
+	if(!HasAuthority())	return ServerEquip();
+	ServerEquip_Implementation();
 }
 
 void ABlasterCharacter::Jump()
