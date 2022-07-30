@@ -36,6 +36,8 @@ public:
 	UFUNCTION()
 	void RemoveOverlappingWeaponToArray(AWeapon* OverlappingWeapon);
 
+	bool HasWeaponEquipped();
+
 	
 protected:
 	virtual void BeginPlay() override;

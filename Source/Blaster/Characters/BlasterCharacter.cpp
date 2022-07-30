@@ -148,3 +148,8 @@ void ABlasterCharacter::RemoveOverlappingWeaponToArray(AWeapon* OverlappingWeapo
 		OverlappingWeapon->SetPickupWidgetComponentVisibility(false);
 	}
 }
+
+bool ABlasterCharacter::HasWeaponEquipped()
+{
+	return CombatComponent && CombatComponent->EquippedWeapon;
+}
