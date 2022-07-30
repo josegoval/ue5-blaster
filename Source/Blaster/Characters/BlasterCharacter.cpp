@@ -34,6 +34,8 @@ ABlasterCharacter::ABlasterCharacter()
 	// Combat component setup
 	CombatComponent = CreateDefaultSubobject<UCombatComponent>(TEXT("CombatComponent"));
 	CombatComponent->SetIsReplicated(true);
+	// CharacterMovementComponent setup
+	GetCharacterMovement()->NavAgentProps.bCanCrouch = true;
 }
 
 // Called when the game starts or when spawned
@@ -83,6 +85,7 @@ void ABlasterCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCo
 	// Bind actions	
 	PlayerInputComponent->BindAction(FName(TEXT("Jump")), EInputEvent::IE_Pressed, this, &ThisClass::Jump);
 	PlayerInputComponent->BindAction(FName(TEXT("Equip")), EInputEvent::IE_Pressed, this, &ThisClass::Equip);
+	PlayerInputComponent->BindAction(FName(TEXT("Crouch")), EInputEvent::IE_Pressed, this, &ThisClass::HandleCrouch);
 }
 
 void ABlasterCharacter::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
@@ -129,6 +132,16 @@ void ABlasterCharacter::Equip()
 void ABlasterCharacter::Jump()
 {
 	Super::Jump();
+}
+
+void ABlasterCharacter::HandleCrouch()
+{
+	if(bIsCrouched)
+	{
+		UnCrouch();
+		return;
+	}
+	Crouch();
 }
 
 void ABlasterCharacter::AddOverlappingWeaponToArray(AWeapon* OverlappingWeapon)

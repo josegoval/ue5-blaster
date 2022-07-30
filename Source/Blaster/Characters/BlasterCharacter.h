@@ -30,6 +30,8 @@ public:
 	UFUNCTION()
 	void Equip();
 	virtual void Jump() override;
+	UFUNCTION()
+	void HandleCrouch();
 
 	UFUNCTION()
 	void AddOverlappingWeaponToArray(class AWeapon* OverlappingWeapon);
