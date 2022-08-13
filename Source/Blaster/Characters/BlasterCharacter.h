@@ -32,6 +32,10 @@ public:
 	virtual void Jump() override;
 	UFUNCTION()
 	void HandleCrouch();
+	UFUNCTION()
+	void OnAimButtonPressed();
+	UFUNCTION()
+	void OnAimButtonReleased();
 
 	UFUNCTION()
 	void AddOverlappingWeaponToArray(class AWeapon* OverlappingWeapon);
@@ -39,6 +43,9 @@ public:
 	void RemoveOverlappingWeaponToArray(AWeapon* OverlappingWeapon);
 
 	bool HasWeaponEquipped();
+	bool IsAiming();
+
+	
 
 	
 protected:

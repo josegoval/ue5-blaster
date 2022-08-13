@@ -62,7 +62,7 @@ void ABlasterCharacter::OnRep_OverlappingWeapon(TArray<AWeapon*> PrevValue)
 
 void ABlasterCharacter::ServerEquip_Implementation()
 {
-	if(!OverlappingWeaponsArray.Num()) return;
+	if (!OverlappingWeaponsArray.Num()) return;
 	CombatComponent->EquipWeapon(OverlappingWeaponsArray[0]);
 }
 
@@ -86,6 +86,8 @@ void ABlasterCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCo
 	PlayerInputComponent->BindAction(FName(TEXT("Jump")), EInputEvent::IE_Pressed, this, &ThisClass::Jump);
 	PlayerInputComponent->BindAction(FName(TEXT("Equip")), EInputEvent::IE_Pressed, this, &ThisClass::Equip);
 	PlayerInputComponent->BindAction(FName(TEXT("Crouch")), EInputEvent::IE_Pressed, this, &ThisClass::HandleCrouch);
+	PlayerInputComponent->BindAction(FName(TEXT("Aim")), EInputEvent::IE_Pressed, this, &ABlasterCharacter::OnAimButtonPressed);
+	PlayerInputComponent->BindAction(FName(TEXT("Aim")), EInputEvent::IE_Released, this, &ABlasterCharacter::OnAimButtonReleased);
 }
 
 void ABlasterCharacter::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
@@ -98,7 +100,7 @@ void ABlasterCharacter::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& Ou
 void ABlasterCharacter::PostInitializeComponents()
 {
 	Super::PostInitializeComponents();
-	if(!CombatComponent) return;
+	if (!CombatComponent) return;
 	CombatComponent->BlasterCharacter = this;
 }
 
@@ -125,7 +127,7 @@ void ABlasterCharacter::TurnRightMouse(float Value)
 
 void ABlasterCharacter::Equip()
 {
-	if(!HasAuthority())	return ServerEquip();
+	if (!HasAuthority()) return ServerEquip();
 	ServerEquip_Implementation();
 }
 
@@ -136,12 +138,24 @@ void ABlasterCharacter::Jump()
 
 void ABlasterCharacter::HandleCrouch()
 {
-	if(bIsCrouched)
+	if (bIsCrouched)
 	{
 		UnCrouch();
 		return;
 	}
 	Crouch();
+}
+
+void ABlasterCharacter::OnAimButtonPressed()
+{
+	if (!CombatComponent) return;
+	CombatComponent->SetIsAiming(true);
+}
+
+void ABlasterCharacter::OnAimButtonReleased()
+{
+	if (!CombatComponent) return;
+	CombatComponent->SetIsAiming(false);
 }
 
 void ABlasterCharacter::AddOverlappingWeaponToArray(AWeapon* OverlappingWeapon)
@@ -165,4 +179,9 @@ void ABlasterCharacter::RemoveOverlappingWeaponToArray(AWeapon* OverlappingWeapo
 bool ABlasterCharacter::HasWeaponEquipped()
 {
 	return CombatComponent && CombatComponent->EquippedWeapon;
+}
+
+bool ABlasterCharacter::IsAiming()
+{
+	return CombatComponent && CombatComponent->bIsAiming;
 }
